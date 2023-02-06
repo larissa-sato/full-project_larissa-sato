@@ -24,8 +24,8 @@ import {
     @Column({ default: true })
     readonly isActive: boolean;
     
-    @ManyToOne(() => Clients, { eager: true })
-    client: Clients;
+    @ManyToOne(() => Clients)
+    clients: Clients;
 
     constructor() {
         if (!this.id) {

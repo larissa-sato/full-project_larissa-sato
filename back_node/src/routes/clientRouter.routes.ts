@@ -6,13 +6,14 @@ import deleteClientController from "../controllers/clientController/deleteClient
 
 import checkTokenMiddleware from "../middlewares/ensureAuthMiddleware.middleware";
 import isAdmMiddleware from "../middlewares/isAdmMiddleware.middleware";
+import updateUserMiddleware from "../middlewares/updateUserMiddleware.middleware";
 
 
 const clientRouter = Router();
 
 clientRouter.post("", checkTokenMiddleware, isAdmMiddleware, createClientController)
 clientRouter.get("", checkTokenMiddleware, isAdmMiddleware, listClientController)
-clientRouter.patch("/:id", checkTokenMiddleware, isAdmMiddleware, updateClientController)
+clientRouter.patch("/:id", checkTokenMiddleware, updateUserMiddleware, updateClientController)
 clientRouter.delete("/:id", checkTokenMiddleware, isAdmMiddleware, deleteClientController)
 
 export default clientRouter

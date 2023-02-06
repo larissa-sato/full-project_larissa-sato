@@ -21,6 +21,7 @@ const createClientService = async ({
     if (contact.length !== 11) {
       throw new AppError("Must have eleven digits! ", 400);
     }
+    console.log("VALORES=",name, email, contact)
   
     const client = clientRepository.create({
         name,

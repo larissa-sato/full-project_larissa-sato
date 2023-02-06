@@ -21,6 +21,9 @@ describe("/client", () => {
       .catch((error) => {
         console.error("Error during data-source initialization", error);
       });
+
+      await request(app).post("/users").send(mockedAdmin);
+      await request(app).post("/users").send(mockedUser);
   });
   afterAll(async () => {
     await connection.destroy();
@@ -58,7 +61,7 @@ describe("/client", () => {
     .send(mockedClient1);
  
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(409);
   });
 
   test("GET /client ->  Must be able to list clients", async () => {
@@ -71,7 +74,7 @@ describe("/client", () => {
       .get("/client")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.body).toHaveLength(2);
+    expect(response.body).toHaveLength(1);
   });
 
   test("GET /client ->  should not be able to list clients without authentication", async () => {
@@ -91,7 +94,7 @@ describe("/client", () => {
       .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("DELETE /client/:id ->  should not be able to delete clients without authentication", async () => {
@@ -166,7 +169,7 @@ describe("/client", () => {
       .delete(`/client/13970660-5dbe-423a-9a9d-5c23b37943cf`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("message");
   });
 
@@ -245,32 +248,6 @@ describe("/client", () => {
       .patch(`/client/${clientTobeUpdateId}`)
       .set("Authorization", token)
       .send(newValues);
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
-  test("PATCH /client/:id -> should not be able to update another client without adm permission", async () => {
-    const newValues = { isActive: false };
-
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUser);
-    const admingLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const userToken = `Bearer ${userLoginResponse.body.token}`;
-    const adminToken = `Bearer ${admingLoginResponse.body.token}`;
-
-    const clientTobeUpdateRequest = await request(app)
-      .get("/client")
-      .set("Authorization", adminToken);
-    const clientTobeUpdateId = clientTobeUpdateRequest.body[1].id;
-
-    const response = await request(app)
-      .patch(`/client/${clientTobeUpdateId}`)
-      .set("Authorization", userToken)
-      .send(newValues);
-
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });

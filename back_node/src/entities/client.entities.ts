@@ -14,7 +14,7 @@ import {
     @PrimaryGeneratedColumn("uuid")
     readonly id: string;
   
-    @Column({ length: 50 })
+    @Column({ length: 50, nullable:false })
     name: string;
   
     @Column({ length: 50, unique: true })
@@ -29,7 +29,7 @@ import {
     @ManyToOne(() => User, { eager: true })
     user: User;
 
-    @OneToMany(() => Contacts, (contacts) => contacts.client)
+    @OneToMany(() => Contacts, (contacts) => contacts.clients, {onDelete: "CASCADE", eager: true})
     contacts: Contacts[];
 
     constructor() {
