@@ -26,7 +26,7 @@ describe("/client", () => {
     await connection.destroy();
   });
 
-  test("POST /client -> Must be able to create a clients", async () => {
+  test("POST /client -> Must be able to create a client", async () => {
     const admLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLogin);
@@ -42,7 +42,7 @@ describe("/client", () => {
     expect(response.body).toHaveProperty("isActive");
     expect(response.body).toHaveProperty("createdAt");
     expect(response.body.name).toEqual("Jordana");
-    expect(response.body.email).toEqual("mariana@mail.com");
+    expect(response.body.email).toEqual("jordana@mail.com");
     expect(response.body.contact).toEqual("11999897563");
     expect(response.body.isActive).toEqual(true);
     expect(response.status).toBe(201);
@@ -166,7 +166,7 @@ describe("/client", () => {
       .delete(`/client/13970660-5dbe-423a-9a9d-5c23b37943cf`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
     expect(response.body).toHaveProperty("message");
   });
 

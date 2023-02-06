@@ -12,8 +12,8 @@ app.use(express.json());
 
 app.use("/login", loginRouter)
 app.use("/users", userRouter)
-app.use("/clients", clientRouter)
-app.use("/contacts", contactRouter)
+app.use("/client", clientRouter)
+app.use("/contact", contactRouter)
 
 app.use(handleErrorMiddleware)
 

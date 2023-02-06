@@ -32,7 +32,7 @@
     "uuidv4": "^6.2.13"
   },
   "scripts": {
-    "dev": "ts-node-dev src/app.ts",
+    "dev": "ts-node-dev --ignore-watch node_modules src/server.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "test": "jest"
   }
