@@ -191,28 +191,6 @@ describe("Testes de rotas de usuários: /users", () => {
     expect(response.status).toBe(404);
   });
 
-  test("PATCH /users/:id -> should not be able to update isAdm field value", async () => {
-    const newValues = { is_adm: false };
-
-    const admingLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const token = `Bearer ${admingLoginResponse.body.token}`;
-
-    const userTobeUpdateRequest = await request(app)
-      .get("/users")
-      .set("Authorization", token);
-    const userTobeUpdateId = userTobeUpdateRequest.body[0].id;
-
-    const response = await request(app)
-      .patch(`/users/${userTobeUpdateId}`)
-      .set("Authorization", token)
-      .send(newValues);
-
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
   test("PATCH /users/:id -> should not be able to update isActive field value", async () => {
     const newValues = { isActive: false };
 

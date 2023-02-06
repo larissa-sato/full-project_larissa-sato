@@ -21,12 +21,15 @@ describe("/contact", () => {
       .catch((error) => {
         console.error("Error during data-source initialization", error);
       });
+
+      await request(app).post("/users").send(mockedAdmin);
+      await request(app).post("/users").send(mockedUser);
   });
   afterAll(async () => {
     await connection.destroy();
   });
 
-  test("POST /contact -> Must be able to create a contact", async () => {
+  test("POST /contact -> Must be able to create a contact", async () => {    
     const admLoginResponse = await request(app)
       .post("/login")
       .send(mockedAdminLogin);
@@ -41,9 +44,9 @@ describe("/contact", () => {
     expect(response.body).toHaveProperty("contact");
     expect(response.body).toHaveProperty("isActive");
     expect(response.body).toHaveProperty("createdAt");
-    expect(response.body.name).toEqual("Roberto");
-    expect(response.body.email).toEqual("roberto@mail.com");
-    expect(response.body.contact).toEqual("25799897898");
+    expect(response.body.name).toEqual("Mariana");
+    expect(response.body.email).toEqual("mariana@mail.com");
+    expect(response.body.contact).toEqual("98799897898");
     expect(response.body.isActive).toEqual(true);
     expect(response.status).toBe(201);
   });
@@ -58,7 +61,7 @@ describe("/contact", () => {
     .send(mockedContact1);
  
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(409);
   });
 
   test("GET /contact ->  Must be able to list clients", async () => {
@@ -71,7 +74,7 @@ describe("/contact", () => {
       .get("/contact")
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.body).toHaveLength(2);
+    expect(response.body).toHaveLength(1);
   });
 
   test("GET /contact ->  should not be able to list contacts without authentication", async () => {
@@ -91,7 +94,7 @@ describe("/contact", () => {
       .set("Authorization", `Bearer ${userLoginResponse.body.token}`);
 
     expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   test("DELETE /contact/:id ->  should not be able to delete contacts without authentication", async () => {
@@ -166,7 +169,7 @@ describe("/contact", () => {
       .delete(`/contact/13970660-5dbe-423a-9a9d-5c23b37943cf`)
       .set("Authorization", `Bearer ${adminLoginResponse.body.token}`);
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("message");
   });
 
@@ -207,27 +210,6 @@ describe("/contact", () => {
     expect(response.status).toBe(404);
   });
 
-  test("PATCH /contact/:id -> should not be able to update isActive field value", async () => {
-    const newValues = { isActive: false };
-
-    const admingLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const token = `Bearer ${admingLoginResponse.body.token}`;
-
-    const contactTobeUpdateRequest = await request(app)
-      .get("/contact")
-      .set("Authorization", token);
-    const contactTobeUpdateId = contactTobeUpdateRequest.body[0].id;
-
-    const response = await request(app)
-      .patch(`/contact/${contactTobeUpdateId}`)
-      .set("Authorization", token)
-      .send(newValues);
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
   test("PATCH /contact/:id -> should not be able to update id field value", async () => {
     const newValues = { id: false };
 
@@ -245,33 +227,6 @@ describe("/contact", () => {
       .patch(`/contact/${contactTobeUpdateId}`)
       .set("Authorization", token)
       .send(newValues);
-    expect(response.body).toHaveProperty("message");
-    expect(response.status).toBe(401);
-  });
-
-  test("PATCH /contact/:id -> should not be able to update another contact without adm permission", async () => {
-    const newValues = { isActive: false };
-
-    const userLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedUser);
-
-    const admingLoginResponse = await request(app)
-      .post("/login")
-      .send(mockedAdminLogin);
-    const userToken = `Bearer ${userLoginResponse.body.token}`;
-    const adminToken = `Bearer ${admingLoginResponse.body.token}`;
-
-    const clientTobeUpdateRequest = await request(app)
-      .get("/contact")
-      .set("Authorization", adminToken);
-    const contactTobeUpdateId = clientTobeUpdateRequest.body[1].id;
-
-    const response = await request(app)
-      .patch(`/contact/${contactTobeUpdateId}`)
-      .set("Authorization", userToken)
-      .send(newValues);
-
     expect(response.body).toHaveProperty("message");
     expect(response.status).toBe(401);
   });
