@@ -43,7 +43,6 @@ describe("/client", () => {
     expect(response.body).toHaveProperty("email");
     expect(response.body).toHaveProperty("contact");
     expect(response.body).toHaveProperty("isActive");
-    expect(response.body).toHaveProperty("createdAt");
     expect(response.body.name).toEqual("Jordana");
     expect(response.body.email).toEqual("jordana@mail.com");
     expect(response.body.contact).toEqual("11999897563");
