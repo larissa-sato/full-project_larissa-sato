@@ -9,7 +9,6 @@ export interface IContact {
     name: string
     email: string
     contact: string
-    createdAt: Date
     updatedAt: Date
 }
 

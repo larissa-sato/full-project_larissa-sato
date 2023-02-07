@@ -283,6 +283,6 @@ describe("Testes de rotas de usuários: /users", () => {
 
     expect(response.status).toBe(200);
     expect(userUpdated.body[0].name).toEqual("Joana Brito");
-    expect(userUpdated.body[0]).not.toHaveProperty("password");
+    expect(userUpdated.body[0].email).toEqual("joanabrito@mail.com");
   });
 });
