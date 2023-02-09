@@ -1,12 +1,9 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fakeApi } from "../services";
-import { toast } from "react-toastify";
 
 export interface AuthContextData {
   user: IUser;
-  loading: boolean;
-  setLoading: (value: React.SetStateAction<boolean>) => void;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
   setUserLogin: React.Dispatch<React.SetStateAction<IUserResponse>>;
   userLogin: IUserResponse;
@@ -34,6 +31,7 @@ export interface IUserResponse {
   name: string;
   email: string;
   password: string;
+  createdAt: Date
 }
 
 export interface ILoginProps {
@@ -46,26 +44,23 @@ const AuthProvider = ({ children }: IAuthContext) => {
     {} as IUserResponse
   );
   const [user, setUser] = useState<IUser>({} as IUser);
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const tokenUser = localStorage.getItem("@login:token");
   const userId = localStorage.getItem("@login:user");
 
   const signIn = (data: ILoginProps) => {
     fakeApi
-      .post("/signin", data)
+      .post("/login", data)
       .then((response) => {
         const { user, accessToken } = response.data;
         fakeApi.defaults.headers.common.Authorization = `Bearer ${tokenUser}`;
         localStorage.setItem("@login:token", accessToken);
         localStorage.setItem("@login:user", user.id);
         setUserLogin(user);
-        setLoading(true);
         navigate("/dashboard", { replace: true });
       })
       .catch((error) => {
-        toast.error("Login e/ou senha inválidos", { autoClose: 2000 });
-        console.error("Esse é o erro", error);
+        console.error("Login e/ou senha inválidos", error);
       });
   };
 
@@ -76,7 +71,6 @@ const AuthProvider = ({ children }: IAuthContext) => {
           fakeApi.defaults.headers.common.Authorization = `Bearer ${tokenUser}`;
           const { data } = await fakeApi.get(`/users/${userId}`);
           setUser(data);
-          setLoading(false);
         } catch (error) {
           console.error(error);
         }
@@ -87,7 +81,6 @@ const AuthProvider = ({ children }: IAuthContext) => {
 
   const logout = () => {
     localStorage.clear();
-    toast.warning("Você está sendo deslogado", { autoClose: 2000 });
     navigate("/");
   };
 
@@ -100,9 +93,7 @@ const AuthProvider = ({ children }: IAuthContext) => {
         user,
         setUser,
         logout,
-        userId,
-        loading,
-        setLoading,
+        userId
       }}
     >
       {children}

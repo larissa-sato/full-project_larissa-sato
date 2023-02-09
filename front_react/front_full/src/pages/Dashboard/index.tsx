@@ -5,6 +5,7 @@ import { Modal } from "../../components/Modal";
 import { MainDash } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { ClientContext } from "../../Context/ClientContext";
+import { Banner } from "../../components/Banner/styles";
 
 export const Dashboard = () => {
   const { modal, tokenUser } = useContext(ClientContext);
@@ -16,7 +17,9 @@ export const Dashboard = () => {
         <>
           {modal && <Modal />}
           <HeaderLogo />
-          <MainDash/>
+            <MainDash>
+              <Banner />
+            </MainDash>
           <FooterDashboard/>
         </>
       ) : (
