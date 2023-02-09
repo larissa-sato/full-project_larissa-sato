@@ -32,7 +32,7 @@ import {
     name: string;
     email: string;
     contact: string;
-    clientList: string;
+    createdAt: string;
     userId: number | null | string;
   }
 
@@ -49,7 +49,6 @@ import {
     email?: string;
     contact?: string;
   }
-
 
   const ClientProvider = ({children}: IClientContext) => {
     const [clientApi, setClientApi] = useState<IClient>({} as IClient)
@@ -78,7 +77,6 @@ import {
         headers: { Authorization: `Bearer ${tokenUser}` },
       })
       .then((res) => {
-        toast.success("Cliente editado com sucesso.", { autoClose: 2000 });
         setClient(res.data);
         setModal(null);
       })

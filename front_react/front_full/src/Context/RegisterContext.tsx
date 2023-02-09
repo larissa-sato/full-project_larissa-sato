@@ -15,7 +15,7 @@ export interface ISubmitData {
   name: string;
   email: string;
   password: string;
-  isAdm: string;
+  infoAdm: string;
 }
 export const RegisterContext = createContext({} as IRegisterProviderProps);
 
@@ -24,15 +24,16 @@ const RegisterProvider = ({ children }: IRegisterProps) => {
 
   const onSubmitFunction = async (data: ISubmitData) => {
 
-    const infoAdm =
-      data.isAdm === "sim"
+    const isAdm =
+      data.infoAdm === "sim"
         ? true
         : false
 
-    const finalData = { ...data, infoAdm };
-
+    const finalData = { ...data, isAdm };
+    const {infoAdm: info, ...rest} = finalData
+    
     try {
-      await fakeApi.post("/users", finalData);
+      await fakeApi.post("/users", rest);
       toast.success("Cadastro feito com sucesso, faça o login.", {
         autoClose: 2000,
       });

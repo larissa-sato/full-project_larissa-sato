@@ -50,13 +50,13 @@ export const Register = () => {
           <label htmlFor="isAdm">
             
               <select
-                id="isAdm"
-                {...register("isAdm")}
+                id="infoAdm"
+                {...register("infoAdm")}
                 className="select-text"
               >
                 <option value="">Administrador</option>
-                <option value="Sim">sim</option>
-                <option value="Não">não</option>
+                <option value="sim">Sim</option>
+                <option value="não">Não</option>
               </select>
               
           </label>
