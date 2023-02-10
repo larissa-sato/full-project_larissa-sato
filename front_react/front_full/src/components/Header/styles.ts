@@ -9,12 +9,12 @@ export const HeaderPage = styled.div`
   z-index: 100;
   margin-bottom: 1.5vh;
   h2 {
-    color: #fff;
+    color: #000;
     font-size: 2rem;
   }
   img {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     margin-right: 4px;
   }
   div > h1 {

@@ -1,13 +1,11 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fakeApi } from "../services";
+import { RegisterContext } from "./RegisterContext";
 
 export interface AuthContextData {
-  user: IUser;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
-  setUserLogin: React.Dispatch<React.SetStateAction<IUserResponse>>;
   userLogin: IUserResponse;
-  userId: string | null;
+  setUserLogin: React.Dispatch<React.SetStateAction<IUserResponse>>;
   signIn: (props: ILoginProps) => void;
   logout: () => void;
 }
@@ -27,7 +25,7 @@ export interface IUser {
 }
 
 export interface IUserResponse {
-  id: number;
+  id: string
   name: string;
   email: string;
   password: string;
@@ -40,27 +38,25 @@ export interface ILoginProps {
 }
 
 const AuthProvider = ({ children }: IAuthContext) => {
-  const [userLogin, setUserLogin] = useState<IUserResponse>(
-    {} as IUserResponse
-  );
-  const [user, setUser] = useState<IUser>({} as IUser);
+  const [userLogin, setUserLogin] = useState<IUserResponse>({} as IUserResponse);
+  const {user, setUser} = useContext(RegisterContext);
   const navigate = useNavigate();
   const tokenUser = localStorage.getItem("@login:token");
-  const userId = localStorage.getItem("@login:user");
+  const userId = localStorage.getItem("@login:id");
 
   const signIn = (data: ILoginProps) => {
     fakeApi
       .post("/login", data)
       .then((response) => {
-        const { user, accessToken } = response.data;
+        const { token } = response.data;
         fakeApi.defaults.headers.common.Authorization = `Bearer ${tokenUser}`;
-        localStorage.setItem("@login:token", accessToken);
-        localStorage.setItem("@login:user", user.id);
-        setUserLogin(user);
+        localStorage.setItem("@login:token", token);
+        localStorage.setItem("@login:id", user.id);
+        setUserLogin(userLogin);
         navigate("/dashboard", { replace: true });
       })
       .catch((error) => {
-        console.error("Login e/ou senha inválidos", error);
+        console.error("Esse é o erro", error);
       });
   };
 
@@ -79,6 +75,7 @@ const AuthProvider = ({ children }: IAuthContext) => {
     loadUser();
   }, [tokenUser, userId]);
 
+
   const logout = () => {
     localStorage.clear();
     navigate("/");
@@ -90,10 +87,7 @@ const AuthProvider = ({ children }: IAuthContext) => {
         userLogin,
         setUserLogin,
         signIn,
-        user,
-        setUser,
-        logout,
-        userId
+        logout
       }}
     >
       {children}

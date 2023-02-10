@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { AuthContext } from "../../Context/LoginContext";
+import { RegisterContext } from "../../Context/RegisterContext";
 
 export const ProtectedRoutes = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(RegisterContext);
   const location = useLocation();
 
   return user ? (

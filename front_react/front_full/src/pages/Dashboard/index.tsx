@@ -1,30 +1,49 @@
 import { useContext } from "react";
-import {FooterDashboard} from "../../components/Footer";
-import {HeaderLogo} from "../../components/Header";
-import { Modal } from "../../components/Modal";
 import { MainDash } from "./styles";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../../Context/LoginContext";
+import { List } from "../../components/List";
 import { ClientContext } from "../../Context/ClientContext";
-import { Banner } from "../../components/Banner/styles";
+import { FooterDash } from "../../components/Footer/styles";
+import ModalAdd from "../../components/ModalAdd";
+import { RegisterContext } from "../../Context/RegisterContext";
 
 export const Dashboard = () => {
-  const { modal, tokenUser } = useContext(ClientContext);
-  const navigate = useNavigate();
+  const {logout} = useContext(AuthContext)
+  const {setIsOpenModal, isOpenModal, closeModal} = useContext(ClientContext)
+  const {user} = useContext(RegisterContext)
+  const tokenUser = localStorage.getItem("@login:token");
 
   return (
     <>
       {tokenUser ? (
-        <>
-          {modal && <Modal />}
-          <HeaderLogo />
-            <MainDash>
-              <Banner />
-            </MainDash>
-          <FooterDashboard/>
-        </>
+        <MainDash>
+          <div className="dashHeader">
+            <p>Olá, {user.name} </p>
+            
+            <button type="button" className="btnBack" onClick={() => logout()}>
+              Sair
+            </button>
+          </div>
+
+          <div className="addClient">
+          <div className="headerList">
+              <p>Meus Clientes</p>
+              <button
+                type="button"
+                className="btnAddClient"
+                onClick={() => setIsOpenModal(!isOpenModal)}
+              > +Cliente </button>
+              {isOpenModal && <ModalAdd />}
+            </div>
+              <List />
+            
+          </div>
+        </MainDash>
       ) : (
-        navigate("/")
+        <Navigate to="/" />
       )}
+    <FooterDash />
     </>
   );
 };

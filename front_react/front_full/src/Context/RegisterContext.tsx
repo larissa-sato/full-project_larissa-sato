@@ -1,10 +1,12 @@
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { fakeApi } from "../services";
+import { IUserResponse } from "./LoginContext";
 
 export interface IRegisterProviderProps {
   onSubmitFunction: (data: ISubmitData) => Promise<void>;
+  user: IUserResponse;
+  setUser: React.Dispatch<React.SetStateAction<IUserResponse>>;
   back: () => void;
 }
 interface IRegisterProps {
@@ -17,11 +19,14 @@ export interface ISubmitData {
   password: string;
   infoAdm: string;
 }
+
 export const RegisterContext = createContext({} as IRegisterProviderProps);
 
 const RegisterProvider = ({ children }: IRegisterProps) => {
   const navigate = useNavigate();
-
+  const [user, setUser] = useState<IUserResponse>(
+    {} as IUserResponse
+  );
   const onSubmitFunction = async (data: ISubmitData) => {
 
     const isAdm =
@@ -31,17 +36,16 @@ const RegisterProvider = ({ children }: IRegisterProps) => {
 
     const finalData = { ...data, isAdm };
     const {infoAdm: info, ...rest} = finalData
-    
+
     try {
-      await fakeApi.post("/users", rest);
-      toast.success("Cadastro feito com sucesso, faça o login.", {
-        autoClose: 2000,
-      });
-      navigate("/");
+      await fakeApi.post("/users", rest)
+      .then((response) => {
+        const newUser = response.data;
+        setUser(newUser);
+        console.log(newUser)
+        navigate("/", { replace: true });
+      })
     } catch (error) {
-      toast.error("Verifique se todos os campos estão preenchidos.", {
-        autoClose: 2000,
-      });
       console.error("Deu esse problema", error);
     }
   };
@@ -50,7 +54,7 @@ const RegisterProvider = ({ children }: IRegisterProps) => {
     navigate("/");
   };
   return (
-    <RegisterContext.Provider value={{ onSubmitFunction, back }}>
+    <RegisterContext.Provider value={{ onSubmitFunction, back, user, setUser}}>
       {children}
     </RegisterContext.Provider>
   );

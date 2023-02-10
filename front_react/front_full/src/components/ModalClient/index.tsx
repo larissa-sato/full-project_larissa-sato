@@ -7,15 +7,15 @@ import { IClientRequest } from "../../interfaces/client";
 
 
 export const ModalAdd = () => {
-  const { setModal } = useContext(ClientContext);
   const { register, handleSubmit } = useForm<IClientRequest>({});
   const { onSubmitClient } = useContext(ClientContext);
+  const {closeModal} = useContext(ClientContext)
 
   return (
     <>
       <section>
         <h3>Cadastro de clientes</h3>
-        <button onClick={() => setModal(null)}> X </button>
+        <button onClick={() => closeModal()}> X </button>
       </section>
       <ModalForm onSubmit={handleSubmit(onSubmitClient)}>
         <div>
@@ -31,20 +31,21 @@ export const ModalAdd = () => {
 };
 
 export const ModalConfig = () => {
-  const { setModal, onSubmitFunction } = useContext(ClientContext);
+  const { onSubmitPatch } = useContext(ClientContext);
   const { register, handleSubmit } = useForm<IClientRequest>({});
+  const {closeModal} = useContext(ClientContext)
 
   return (
     <>
       <section>
-        <h3>Cadastro de cliente</h3>
-        <button onClick={() => setModal(null)}> X </button>
+        <h3>Editar cliente</h3>
+        <button onClick={() => closeModal()}> X </button>
       </section>
-      <ModalForm onSubmit={handleSubmit(onSubmitFunction)}>
+      <ModalForm onSubmit={handleSubmit(onSubmitPatch)}>
         <div>
-          <input id="name" {...register("name")} />
-          <input id="email" {...register("email")} />
-          <input id="contact" {...register("contact")} />
+          <input id="name" placeholder="Nome" {...register("name")} />
+          <input id="email" placeholder="Email" {...register("email")} />
+          <input id="contact" placeholder="Telefone" {...register("contact")} />
         </div>
 
         <button type="submit">Editar</button>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import createUserController from "../controllers/userController/createUserController.controller";
 import deleteUserController from "../controllers/userController/deleteUserController.controller";
 import listUsersController from "../controllers/userController/listUserController.controller";
+import listUserIdController from "../controllers/userController/listUserIdController.controller";
 import updateUserController from "../controllers/userController/updateUserController.controller";
 import { userLoginController } from "../controllers/userLoginController/loginUserController.controller";
 
@@ -14,6 +15,7 @@ const userRouter = Router();
 
 userRouter.post("", createUserController);
 userRouter.get("", checkTokenMiddleware, isAdmMiddleware, listUsersController);
+userRouter.get("/:id", checkTokenMiddleware, isAdmMiddleware, listUserIdController);
 userRouter.patch("/:id", checkTokenMiddleware, updateUserMiddleware, updateUserController);
 userRouter.delete("/:id", checkTokenMiddleware, isAdmMiddleware, deleteUserController)
 

@@ -11,14 +11,14 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <RegisterProvider>
-          <ClientProvider>
-            <GlobalStyle/>
-            <MainRoutes/>
-          </ClientProvider>
-        </RegisterProvider>
-      </AuthProvider>
+      <RegisterProvider>
+        <AuthProvider>
+            <ClientProvider>
+              <GlobalStyle/>
+              <MainRoutes/>
+            </ClientProvider>
+        </AuthProvider>
+      </RegisterProvider>
     </div>
   );
 }

@@ -3,27 +3,28 @@ import {
     ReactNode,
     useState,
     useEffect,
-    useContext,
     Dispatch,
     SetStateAction,
   } from "react";
-  import { AuthContext } from "./LoginContext";
   import { fakeApi} from "../services";
-  import { toast } from "react-toastify";
   import { IClient, IClientRequest } from "../interfaces/client";
   
 
   export interface ClientContextData{
-    loading: boolean;
     tokenUser: string | null;
     modal: string | null;
+    setModal: Dispatch<SetStateAction<string | null>>;
+    isOpenModal: boolean,
+    setIsOpenModal: Dispatch<SetStateAction<boolean>>,
+    openModal: () => void,
+    closeModal: () => void,
     client: IClientList[];
     setClient: Dispatch<SetStateAction<IClientList[]>>;
     clientApi: IClient;
     setClientApi: React.Dispatch<React.SetStateAction<IClient>>;
-    setModal: Dispatch<SetStateAction<string | null>>;
     onSubmitClient: (data: IClientRequest) => void;
-    onSubmitFunction: (data: IConfig) => void
+    onSubmitPatch: (data: IConfig) => void
+    onSubmitSearch: (data: IConfig) => void;
     deletedClient: (id: string) => void;
   }
 
@@ -33,6 +34,7 @@ import {
     email: string;
     contact: string;
     createdAt: string;
+    isActive: boolean;
     userId: number | null | string;
   }
 
@@ -52,28 +54,36 @@ import {
 
   const ClientProvider = ({children}: IClientContext) => {
     const [clientApi, setClientApi] = useState<IClient>({} as IClient)
-    const [modal, setModal] = useState<string | null>(null);
+    const [modal, setModal] = useState<string| null>(null);
     const [client, setClient] = useState<IClientList[]>([])
-    const { loading } = useContext(AuthContext);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    console.log(isOpenModal)
 
     const tokenUser = localStorage.getItem("@login:token");
+
+
+  const openModal = () => {
+    setIsOpenModal(true)
+  }
+
+  const closeModal = () => {
+    setIsOpenModal(false)
+  }
     
   const onSubmitClient = (data: IClientRequest) => {
     fakeApi
       .post("/client", data)
       .then((response) => {
-        toast.success("Cliente adicionado com sucesso", {
-          autoClose: 2000,
-        });
         setClient((oldClients) => [...oldClients, response.data]);
+        setClientApi(response.data)
         setModal(null);
       })
       .catch((error) => console.error("Esse é o problema!", error));
   };
 
-  const onSubmitFunction = (id: IConfig) => {
+  const onSubmitPatch = (id: IConfig) => {
     fakeApi
-      .patch(`/clients/${id}`,{
+      .patch(`/client/${id}`,{
         headers: { Authorization: `Bearer ${tokenUser}` },
       })
       .then((res) => {
@@ -81,9 +91,19 @@ import {
         setModal(null);
       })
       .catch((error) => {
-        toast.error("Ocorreu um erro ao editar o cliente.", {
-          autoClose: 2000,
-        });
+        console.error("Esse é o problema!", error);
+      });
+  };
+
+  const onSubmitSearch = () => {
+    fakeApi
+      .get(`/client`,{
+        headers: { Authorization: `Bearer ${tokenUser}` },
+      })
+      .then((res) => {
+        setClient(res.data);
+      })
+      .catch((error) => {
         console.error("Esse é o problema!", error);
       });
   };
@@ -102,16 +122,14 @@ import {
     }
   }, []);
 
-
   const deletedClient = (id: string) => {
     fakeApi
       .delete(`/client/${id}`, {
         headers: { Authorization: `Bearer ${tokenUser}` },
       })
       .then(() => {
-        const deletedFiltered = client.filter((elem) => elem.id !== id);
+        const deletedFiltered = client.filter((elem) => elem.isActive !== true);
         setClient(deletedFiltered);
-        toast.success("Cliente removido com sucesso!");
       })
       .catch((err) => console.error("Este é o erro!", err));
   };
@@ -122,14 +140,18 @@ import {
         client,
         setClient,
         clientApi,
-        loading,
         tokenUser,
         modal,
-        setClientApi,
         setModal,
+        isOpenModal,
+        setIsOpenModal,
+        openModal,
+        closeModal,
+        setClientApi,
         onSubmitClient,
         deletedClient,
-        onSubmitFunction
+        onSubmitPatch,
+        onSubmitSearch
       }}
     >
       {children}
