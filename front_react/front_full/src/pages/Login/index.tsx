@@ -4,7 +4,6 @@ import { Form } from "../../components/Forms/styles";
 import { Container } from "./styles";
 import { Button } from "../../components/Buttons/styles";
 import { useContext } from "react";
-import { toast } from "react-toastify";
 
 export const Login = () => {
   const {
@@ -13,9 +12,7 @@ export const Login = () => {
   } = useForm<ILoginProps>();
   const { signIn } = useContext(AuthContext);
 
-  const onError = () => toast.error("Campo obrigatório!", { autoClose: 2000 });
-
-  const onSubmit = handleSubmit(signIn, onError);
+  const onSubmit = handleSubmit(signIn);
 
   return (
     <Container>

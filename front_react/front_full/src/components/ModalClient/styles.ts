@@ -9,16 +9,16 @@ export const ModalForm = styled.form`
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
-    gap: 15px;
-    input {
-      height: 2rem;
-      width: 100%;
-      padding-left: 0.8rem;
-      color: #ffffff;
-      background-color: #0f4670;
-      border: none;
-      border-radius: 15px;
-    }
+    gap: 15px; 
+  input {
+    height: 2rem;
+    width: 100%;
+    padding-left: 0.8rem;
+    color: #ffffff;
+    background-color: #0f4670;
+    border: none;
+    border-radius: 15px;
+  }
   }
   p {
     height: 2rem;
@@ -32,7 +32,7 @@ export const ModalForm = styled.form`
   button {
     display: block;
     width: 100%;
-    height: 2.4rem;
+    height: 2.5rem;
     border: 1px solid #0f4670;
     border-radius: 15px;
     margin: 1.5rem 0 1rem;

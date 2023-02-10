@@ -10,14 +10,6 @@ export const Banner = styled.div`
   padding: 20px;
   border-radius: 12px;
   margin: 1em 0;
-  .divText {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    p {
-      max-width: 90%;
-    }
-  }
   h3 {
     display: flex;
     list-style: none;
