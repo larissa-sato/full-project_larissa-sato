@@ -1,5 +1,5 @@
-import "reflect-metadata";
 import "express-async-errors";
+import "reflect-metadata";
 import express from "express";
 import handleErrorMiddleware from "./middlewares/handleErrorMiddleware.middleware";
 import loginRouter from "./routes/userLoginRouter.routes";
